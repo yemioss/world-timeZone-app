@@ -31,13 +31,10 @@
 						<muleVersion>4.2.2</muleVersion>
 						<username>yemioss12</username>
 						<password>Amen@2020</password>
-						<applicationName>worldTimeZone</applicationName>
+						<applicationName>worldTimeNew</applicationName>
 						<environment>Sandbox</environment>
 						<workerType>Micro</workerType>
 						<workers>1</workers>
-						<properties>
-							<key>value</key>
-						</properties>
 					</cloudHubDeployment>
 				</configuration>
 			</plugin>
