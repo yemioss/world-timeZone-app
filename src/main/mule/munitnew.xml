@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="d5fa89e8-caeb-45f2-b9ac-d449d9db1327" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="cdb9d644-0143-44c6-835a-8731dd8bff1f" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="root" database="sales" />
+	</db:config>
+	<flow name="munitnewFlow" doc:id="a01066a0-fc59-4303-bbe6-244b76b4df5e" >
+		<http:listener doc:name="Listener" doc:id="24c0a487-ae82-4074-87c2-084a677d629b" config-ref="HTTP_Listener_config" path="/munit"/>
+		<set-variable value="#[attributes.queryParams.id]" doc:name="Set Variable" doc:id="563a5587-656b-4cb1-9022-fe6f9aa85c5c" variableName="id"/>
+		<set-variable value="#[payload.salary]" doc:name="Set Variable" doc:id="c29a4dc0-5f74-456a-a80d-531e6e67adc9" variableName="salary"/>
+		<db:select doc:id="7dcfa203-648a-47f0-8d87-6d3fd505d62b" config-ref="Database_Config">
+			<db:sql ><![CDATA[select id,salary from users ]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	id: vars.id,
+	salary:vars.salary
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="68fc67d7-10b1-40d8-b595-049c26860cc0" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
